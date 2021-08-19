@@ -19,11 +19,25 @@ async def hello(ctx):
 
 @client.command(name="class")
 async def _class(ctx):
+    
+    def message_check(m):
+        return m.author == ctx.message.author
+    
     await ctx.send("Which day's time table do you need? " + ctx.message.author.mention)
-    day = await client.wait_for('message',timeout=None,check=None)
-    if day.content.lower() == "tuesday":
-        await ctx.send("Taking user input works")
-    else:
-        await ctx.send("Not tuesday")
+    day = await client.wait_for('message',timeout=None,check=message_check)
+    
+    f = open("timetable.txt","r")
+    for i in f:
+        if day.content.lower() in i.lower():
+            await ctx.send(f.readline())
+        else:
+            continue
+    
+    f.close()
+    
+    # if day.content.lower() == "tuesday":
+    #     await ctx.send("Taking user input works")
+    # else:
+    #     await ctx.send("Not tuesday")
 
 client.run(os.getenv('TOKEN'))
