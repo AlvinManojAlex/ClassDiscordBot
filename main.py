@@ -27,17 +27,25 @@ async def _class(ctx):
     day = await client.wait_for('message',timeout=None,check=message_check)
     
     f = open("timetable.txt","r")
-    for i in f:
+    for i in f:         
         if day.content.lower() in i.lower():
-            await ctx.send(f.readline())
+            
+            tt = f.readline()
+            lst = tt.split(',')
+            
+            ttformatted = ""
+            
+            for j in lst:
+                ttformatted += j + '\n'                 #Each course in seperate lines
+            
+            embed = discord.Embed(title = day.content.upper(), description = ttformatted, color = discord.Color.gold())
+            embed.set_author(name = ctx.author.display_name, icon_url = ctx.author.avatar_url)
+            embed.set_footer(text = "Regular class timetable")      
+            await ctx.send(embed = embed)
+
         else:
             continue
     
     f.close()
-    
-    # if day.content.lower() == "tuesday":
-    #     await ctx.send("Taking user input works")
-    # else:
-    #     await ctx.send("Not tuesday")
 
 client.run(os.getenv('TOKEN'))
